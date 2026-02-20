@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Convite da Sophia 💖</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffc9de 0%, #ffb3d9 100%);
+  font-family: 'Quicksand', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Container principal */
+.container {
+  width: 100%;
+  max-width: 500px;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.titulo-topo {
+  position: relative; /* Changed from absolute */
+  top: auto;
+  margin-bottom: 20px; /* Closer to envelope */
+  text-align: center;
+  width: 100%;
+  font-family: 'Quicksand', sans-serif; /* Rounded font */
+  font-weight: 700;
+  text-transform: uppercase; /* Uppercase */
+  font-size: 24px;
+  color: #fff;
+  text-shadow: 0 4px 15px rgba(255, 105, 180, 0.6);
+  letter-spacing: 2px;
+  transition: opacity 0.5s ease;
+}
+
+.titulo-topo.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Envelope */
+.envelope-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  perspective: 1000px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.envelope-container:active {
+  transform: scale(0.98);
+}
+
+.envelope-container.opened {
+  cursor: default;
+  pointer-events: none;
+}
+
+.envelope-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(255, 105, 180, 0.4);
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.envelope-container.opened .envelope-image {
+  transform: translateY(-150%) scale(0.3);
+  opacity: 0;
+}
+
+/* Indicador de clique */
+.click-indicator {
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(255, 105, 180, 0.5);
+  animation: pulse 2s infinite;
+  opacity: 1;
+  transition: opacity 0.5s;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.envelope-container.opened .click-indicator {
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    opacity: 0.7;
+    transform: translateX(-50%) translateY(0);
+  }
+  50% { 
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+/* Convite */
+.invitation {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 90%;
+  max-width: 380px;
+  background: white;
+  border-radius: 25px;
+  padding: 35px 25px;
+  box-shadow: 0 20px 60px rgba(255, 105, 180, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  border: 4px solid #ffb3d9;
+  z-index: 100;
+}
+
+.envelope-container.opened ~ .invitation {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: all;
+}
+
+.invitation-header {
+  font-family: 'Pacifico', cursive;
+  font-size: 26px;
+  color: #ff69b4;
+  margin-bottom: 5px;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.kitty-icon {
+  font-size: 50px;
+  text-align: center;
+  margin: 15px 0;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.invitation-subtitle {
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.divider {
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(to right, #ff69b4, #ffc9e5);
+  margin: 15px auto;
+  border-radius: 2px;
+}
+
+.event-details {
+  background: linear-gradient(135deg, #fff5f8, #ffe8f0);
+  border-radius: 15px;
+  padding: 18px;
+  margin: 18px 0;
+  border: 2px dashed #ffb3d9;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 15px;
+  color: #555;
+}
+
+.detail-icon {
+  font-size: 22px;
+  margin-right: 10px;
+  min-width: 28px;
+}
+
+.detail-text {
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.confirm-btn {
+  width: 70%;
+  max-width: 250px;
+  background: linear-gradient(135deg, #ff69b4, #ff85c1);
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  position: absolute;
+  top: 60%;   /* AJUSTE FINO AQUI se precisar */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Quicksand', sans-serif;
+  box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 2010;
+}
+
+.confirm-btn:active {
+  transform: translateX(-50%) scale(0.97);
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.5);
+}
+
+/* Confetes */
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: #ff69b4;
+  opacity: 0;
+  z-index: 99;
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 1;
+    transform: translateY(-50px) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100vh) rotate(720deg);
+  }
+}
+
+/* Corações de fundo */
+.heart-bg {
+  position: fixed;
+  font-size: 25px;
+  opacity: 0.15;
+  animation: float 15s infinite ease-in-out;
+  z-index: 0;
+}
+
+.kitty-bg {
+  position: fixed;
+  width: 40px;
+  height: auto;
+  opacity: 0.15;
+  animation: float 15s infinite ease-in-out;
+  z-index: 0;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-30px) rotate(10deg); }
+}
+
+/* Stories Overlay */
+.stories-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #ffc9de 0%, #ffb3d9 100%); /* Same as body */
+  z-index: 2000;
+  transform: translateY(100%);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stories-overlay.active {
+  transform: translateY(0);
+}
+
+.stories-content-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 450px; /* Base width for desktop */
+  height: 100%;
+  max-height: 800px; /* 450 * 16 / 9 */
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #ffc9de 0%, #ffb3d9 100%);
+  box-shadow: 0 30px 60px rgba(255, 105, 180, 0.5), 0 15px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 20px; /* Arredondamento suave para parecer um celular */
+  transform: perspective(1000px) rotateX(2deg); /* Leve inclinação 3D */
+}
+
+@media (max-aspect-ratio: 9/16) {
+  .stories-content-wrapper {
+    width: 100vw;
+    height: 177.78vw; /* 100 * 16 / 9 */
+  }
+}
+
+@media (min-aspect-ratio: 9/16) {
+  .stories-content-wrapper {
+    height: 100vh;
+    width: 56.25vh; /* 100 * 9 / 16 */
+  }
+}
+
+/* Progress Bars */
+.progress-container {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  z-index: 2002;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
+}
+
+.progress-bar.active .progress-fill {
+  animation: progressAnim 10s linear forwards;
+}
+
+.progress-bar.completed .progress-fill {
+  transform: scaleX(1);
+}
+
+@keyframes progressAnim {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* Carousel Track */
+.stories-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.story {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 40px 20px 80px 20px;
+  text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #fff;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.story.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Story Content Styles - Simplified for images */
+.story-title {
+  display: none;
+}
+
+.story-content {
+  display: none;
+}
+
+.story-item {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.story-icon {
+  font-size: 28px;
+  margin-right: 15px;
+  min-width: 35px;
+  text-align: center;
+}
+
+/* Hide old invitation popup effectively */
+.envelope-container.opened ~ .invitation {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Helper for navigation */
+.nav-hint {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  color: rgba(255,255,255,0.6);
+  pointer-events: none;
+}
+.nav-left { left: 10px; }
+.nav-right { right: 10px; }
+
+</style>
+</head>
+
+<body>
+
+<!-- Elementos de fundo -->
+<div class="heart-bg" style="top: 5%; left: 10%;">💗</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="top: 12%; left: 30%; animation-delay: 1s;">
+<div class="heart-bg" style="top: 15%; right: 15%; animation-delay: 2s;">💖</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="top: 25%; left: 5%; animation-delay: 1.5s;">
+<div class="heart-bg" style="bottom: 20%; left: 20%; animation-delay: 4s;">💕</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="bottom: 30%; right: 30%; animation-delay: 2.5s;">
+<div class="heart-bg" style="bottom: 10%; right: 10%; animation-delay: 1s;">💝</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="top: 45%; right: 5%; animation-delay: 3.5s;">
+<div class="heart-bg" style="top: 50%; left: 5%; animation-delay: 3s;">🎀</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="bottom: 50%; left: 50%; animation-delay: 0.5s;">
+<div class="heart-bg" style="top: 60%; right: 5%; animation-delay: 5s;">🎀</div>
+<img src="imagens/kitty3.png" class="kitty-bg" style="top: 80%; left: 80%; animation-delay: 4.5s;">
+
+<div class="container">
+  <div class="titulo-topo" id="mainTitle">
+    Aniversário da Sophia Ramos
+  </div>
+  <div class="envelope-container" id="envelopeContainer">
+    <img src="imagens/envelope.png" alt="Envelope da Sophia" class="envelope-image">
+  </div>
+  
+  <!-- Old Invitation div remains but hidden via CSS -->
+  <div class="invitation">
+    <div class="kitty-icon">😺</div>
+    <div class="invitation-header">Sophia faz 9 anos!</div>
+     <!-- ... content ... -->
+    <button class="confirm-btn" onclick="confirmarPresenca()">Confirmar Presença 💖</button>
+  </div>
+</div>
+
+<!-- Stories Overlay Structure -->
+<div class="stories-overlay" id="storiesOverlay">
+  <div class="stories-content-wrapper">
+    <div class="progress-container">
+      <div class="progress-bar" id="bar0"><div class="progress-fill"></div></div>
+      <div class="progress-bar" id="bar1"><div class="progress-fill"></div></div>
+      <div class="progress-bar" id="bar2"><div class="progress-fill"></div></div>
+    </div>
+
+    <div class="stories-track" id="storiesTrack">
+      
+      <!-- Story 1 -->
+      <div class="story" style="background-image: url('imagens/Stories1.jpeg');">
+      </div>
+
+      <!-- Story 2 -->
+      <div class="story" style="background-image: url('imagens/Stories2.jpeg');">
+      </div>
+
+      <!-- Story 3 -->
+      <div class="story" style="background-image: url('imagens/Stories3.jpeg');">
+          <button class="confirm-btn" onclick="confirmarPresenca()">
+            Confirmar Presença 💖
+          </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const envelopeContainer = document.getElementById('envelopeContainer');
+const mainTitle = document.getElementById('mainTitle');
+const storiesOverlay = document.getElementById('storiesOverlay');
+const storiesTrack = document.getElementById('storiesTrack');
+const totalStories = 3;
+let currentStory = 0;
+let opened = false;
+
+// Abrir envelope ao tocar
+envelopeContainer.addEventListener('click', function(e) {
+  if (!opened) {
+    opened = true;
+    this.classList.add('opened');
+    mainTitle.classList.add('hidden'); // Ocultar título
+    createConfetti();
+    
+    // Mostrar stories após a animação do envelope
+    setTimeout(() => {
+        storiesOverlay.classList.add('active');
+        showStory(0);
+    }, 800);
+  }
+});
+
+// Navegação e Controle de Stories
+const stories = document.querySelectorAll('.story');
+let storyTimeout;
+let isPaused = false;
+let startX = 0;
+let currentX = 0;
+let isSwiping = false;
+
+function showStory(index) {
+    clearTimeout(storyTimeout);
+
+    stories.forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.progress-bar').forEach(b => {
+        b.classList.remove('active', 'completed');
+        void b.offsetWidth;
+    });
+
+    currentStory = index;
+    stories[currentStory].classList.add('active');
+
+    for (let i = 0; i < totalStories; i++) {
+        const bar = document.getElementById(`bar${i}`);
+        if (i < currentStory) bar.classList.add('completed');
+        if (i === currentStory) bar.classList.add('active');
+    }
+
+    if (currentStory < totalStories - 1) {
+        storyTimeout = setTimeout(() => {
+            showStory(currentStory + 1);
+        }, 10000);
+    }
+}
+
+// PAUSAR QUANDO SEGURA
+storiesOverlay.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    isPaused = true;
+    clearTimeout(storyTimeout);
+    const activeFill = document.querySelector(`#bar${currentStory} .progress-fill`);
+    if (activeFill) activeFill.style.animationPlayState = 'paused';
+    
+    // Início do Swipe
+    startX = e.clientX;
+    currentX = startX; // Garante que currentX comece com um valor válido
+    isSwiping = true;
+});
+
+storiesOverlay.addEventListener('pointermove', e => {
+    if (!isSwiping) return;
+    currentX = e.clientX;
+});
+
+storiesOverlay.addEventListener('pointerup', e => {
+    if (e.target.closest('button')) return;
+    
+    isPaused = false;
+    const activeFill = document.querySelector(`#bar${currentStory} .progress-fill`);
+    if (activeFill) activeFill.style.animationPlayState = 'running';
+
+    // Lógica de Swipe/Clique corrigida
+    let diff = currentX - startX;
+    let absDiff = Math.abs(diff);
+    let navigated = false;
+
+    if (absDiff > 50) {
+        // SWIPE
+        if (diff < 0 && currentStory < totalStories - 1) {
+            showStory(currentStory + 1);
+            navigated = true;
+        } else if (diff > 0 && currentStory > 0) {
+            showStory(currentStory - 1);
+            navigated = true;
+        }
+    } else {
+        // CLIQUE (Usa o rect do card para precisão)
+        const rect = storiesOverlay.getBoundingClientRect();
+        const clickX = startX - rect.left;
+
+        if (clickX > rect.width / 2) {
+            if (currentStory < totalStories - 1) {
+                showStory(currentStory + 1);
+                navigated = true;
+            }
+        } else {
+            if (currentStory > 0) {
+                showStory(currentStory - 1);
+                navigated = true;
+            }
+        }
+    }
+
+    isSwiping = false;
+
+    // Retomar timer se não navegou (o showStory já cria um novo timer)
+    if (!navigated && currentStory < totalStories - 1) {
+        storyTimeout = setTimeout(() => {
+            showStory(currentStory + 1);
+        }, 10000);
+    }
+});
+
+// Criar confetes
+function createConfetti() {
+  const colors = ['#ff69b4', '#ffc9e5', '#ffb3d9', '#ff85c1', '#ffa6d5', '#fff'];
+  
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = Math.random() * 100 + '%';
+      confetti.style.top = '-50px';
+      confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.animationDelay = Math.random() * 0.3 + 's';
+      confetti.style.width = Math.random() * 8 + 5 + 'px';
+      confetti.style.height = confetti.style.width;
+      confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      document.body.appendChild(confetti);
+      
+      setTimeout(() => confetti.remove(), 3000);
+    }, i * 25);
+  }
+}
+
+// Confirmar presença
+function confirmarPresenca() {
+  // Substitua SEUNUMERO pelo número de WhatsApp com código do país
+  const mensagem = encodeURIComponent('Olá! Confirmo presença na festa da Sophia!');
+  window.location.href = `https://wa.me/5541999217383?text=${mensagem}`;
+}
+
+// Prevenir zoom no iOS
+document.addEventListener('gesturestart', function(e) {
+  e.preventDefault();
+});
+</script>
+
+</body>
+</html>
