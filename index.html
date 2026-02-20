@@ -214,26 +214,30 @@ body {
 }
 
 .confirm-btn {
-  width: 100%;
+  width: 70%;
+  max-width: 250px;
   background: linear-gradient(135deg, #ff69b4, #ff85c1);
   border: none;
-  padding: 16px;
-  font-size: 17px;
+  padding: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: white;
   border-radius: 25px;
   cursor: pointer;
-  margin-top: 20px;
+  position: absolute;
+  top: 60%;   /* AJUSTE FINO AQUI se precisar */
+  left: 50%;
+  transform: translate(-50%, -50%);
   font-family: 'Quicksand', sans-serif;
   box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
   transition: all 0.3s;
   text-transform: uppercase;
   letter-spacing: 1px;
-  -webkit-tap-highlight-color: transparent;
+  z-index: 2010;
 }
 
 .confirm-btn:active {
-  transform: scale(0.97);
+  transform: translateX(-50%) scale(0.97);
   box-shadow: 0 4px 15px rgba(255, 105, 180, 0.5);
 }
 
@@ -289,16 +293,47 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+  background: linear-gradient(135deg, #ffc9de 0%, #ffb3d9 100%); /* Same as body */
   z-index: 2000;
   transform: translateY(100%);
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .stories-overlay.active {
   transform: translateY(0);
+}
+
+.stories-content-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 450px; /* Base width for desktop */
+  height: 100%;
+  max-height: 800px; /* 450 * 16 / 9 */
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #ffc9de 0%, #ffb3d9 100%);
+  box-shadow: 0 30px 60px rgba(255, 105, 180, 0.5), 0 15px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 20px; /* Arredondamento suave para parecer um celular */
+  transform: perspective(1000px) rotateX(2deg); /* Leve inclinação 3D */
+}
+
+@media (max-aspect-ratio: 9/16) {
+  .stories-content-wrapper {
+    width: 100vw;
+    height: 177.78vw; /* 100 * 16 / 9 */
+  }
+}
+
+@media (min-aspect-ratio: 9/16) {
+  .stories-content-wrapper {
+    height: 100vh;
+    width: 56.25vh; /* 100 * 9 / 16 */
+  }
 }
 
 /* Progress Bars */
@@ -321,60 +356,66 @@ body {
 }
 
 .progress-fill {
-  width: 0%;
+  width: 100%;
   height: 100%;
   background: #fff;
-  transition: width 0.3s ease;
-}
-
-.progress-bar.completed .progress-fill {
-  width: 100%;
+  transform: scaleX(0);
+  transform-origin: left;
+  will-change: transform;
 }
 
 .progress-bar.active .progress-fill {
-  width: 100%;
+  animation: progressAnim 10s linear forwards;
+}
+
+.progress-bar.completed .progress-fill {
+  transform: scaleX(1);
+}
+
+@keyframes progressAnim {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
 }
 
 /* Carousel Track */
 .stories-track {
   display: flex;
-  width: 300%; /* 3 stories */
+  width: 100%;
   height: 100%;
-  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
 }
 
 .story {
-  width: 100vw;
+  width: 100%;
   height: 100%;
-  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  padding: 40px;
+  padding: 40px 20px 80px 20px;
   text-align: center;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   color: #fff;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
 
-/* Story Content Styles */
+.story.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Story Content Styles - Simplified for images */
 .story-title {
-  font-family: 'Pacifico', cursive;
-  font-size: 36px;
-  margin-bottom: 30px;
-  text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: none;
 }
 
 .story-content {
-  font-size: 20px;
-  line-height: 1.8;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 30px;
-  border-radius: 20px;
-  color: #ff69b4;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 350px;
+  display: none;
 }
 
 .story-item {
@@ -449,58 +490,31 @@ body {
 
 <!-- Stories Overlay Structure -->
 <div class="stories-overlay" id="storiesOverlay">
-  
-  <div class="progress-container">
-    <div class="progress-bar" id="bar0"><div class="progress-fill"></div></div>
-    <div class="progress-bar" id="bar1"><div class="progress-fill"></div></div>
-    <div class="progress-bar" id="bar2"><div class="progress-fill"></div></div>
-  </div>
-
-  <div class="stories-track" id="storiesTrack">
-    
-    <!-- Story 1 -->
-    <div class="story">
-      <div class="story-title">Data e Local</div>
-      <div class="story-content">
-        <div class="story-item">
-          <span class="story-icon">📅</span> 07 de Março
-        </div>
-        <div class="story-item">
-          <span class="story-icon">⏰</span> 13h00
-        </div>
-        <div class="story-item">
-          <span class="story-icon">📍</span> Rua Major Theolindo Ferreira Ribas, 2977
-        </div>
-      </div>
-      <div class="kitty-icon" style="font-size: 80px; margin-top: 30px;">🏠</div>
+  <div class="stories-content-wrapper">
+    <div class="progress-container">
+      <div class="progress-bar" id="bar0"><div class="progress-fill"></div></div>
+      <div class="progress-bar" id="bar1"><div class="progress-fill"></div></div>
+      <div class="progress-bar" id="bar2"><div class="progress-fill"></div></div>
     </div>
 
-    <!-- Story 2 -->
-    <div class="story">
-      <div class="story-title">Programação</div>
-      <div class="story-content">
-        <div class="story-item"><span class="story-icon">🎈</span> Recepção</div>
-        <div class="story-item"><span class="story-icon">🎂</span> Hora do bolo</div>
-        <div class="story-item"><span class="story-icon">🎉</span> Brincadeiras</div>
-        <div class="story-item"><span class="story-icon">📸</span> Fotos</div>
+    <div class="stories-track" id="storiesTrack">
+      
+      <!-- Story 1 -->
+      <div class="story" style="background-image: url('imagens/Stories1.jpeg');">
       </div>
-       <div class="kitty-icon" style="font-size: 80px; margin-top: 30px;">🍰</div>
-    </div>
 
-    <!-- Story 3 -->
-    <div class="story">
-      <div class="story-title">Traje da Festa</div>
-      <div class="story-content">
-        <div class="story-item"><span class="story-icon">👗</span> Roupa confortável</div>
-        <div class="story-item"><span class="story-icon">🎀</span> Algo rosa ou da Hello Kitty</div>
-        
-        <button class="confirm-btn" onclick="confirmarPresenca()" style="margin-top: 20px;">
-          Confirmar Presença 💖
-        </button>
+      <!-- Story 2 -->
+      <div class="story" style="background-image: url('imagens/Stories2.jpeg');">
       </div>
-       <div class="kitty-icon" style="font-size: 80px; margin-top: 30px;">👒</div>
-    </div>
 
+      <!-- Story 3 -->
+      <div class="story" style="background-image: url('imagens/Stories3.jpeg');">
+          <button class="confirm-btn" onclick="confirmarPresenca()">
+            Confirmar Presença 💖
+          </button>
+      </div>
+
+    </div>
   </div>
 </div>
 
@@ -524,57 +538,111 @@ envelopeContainer.addEventListener('click', function(e) {
     // Mostrar stories após a animação do envelope
     setTimeout(() => {
         storiesOverlay.classList.add('active');
-        updateStoriesUI();
+        showStory(0);
     }, 800);
   }
 });
 
-// Navegação ao clicar nas bordas
-storiesOverlay.addEventListener('click', function(e) {
-    // Se clicar em botão ou link, não navega
-    if (e.target.closest('button') || e.target.closest('a')) return;
+// Navegação e Controle de Stories
+const stories = document.querySelectorAll('.story');
+let storyTimeout;
+let isPaused = false;
+let startX = 0;
+let currentX = 0;
+let isSwiping = false;
 
-    const screenWidth = window.innerWidth;
-    const clickX = e.clientX;
+function showStory(index) {
+    clearTimeout(storyTimeout);
 
-    if (clickX > screenWidth / 2) {
-        // Próximo
-        if (currentStory < totalStories - 1) {
-            currentStory++;
-            updateStoriesUI();
-        }
-    } else {
-        // Anterior
-        if (currentStory > 0) {
-            currentStory--;
-            updateStoriesUI();
-        }
-    }
-});
+    stories.forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.progress-bar').forEach(b => {
+        b.classList.remove('active', 'completed');
+        void b.offsetWidth;
+    });
 
-function updateStoriesUI() {
-    // Mover o track
-    // width track = 300vw. story = 100vw.
-    // translate 0 -> 0vw
-    // translate 1 -> -100vw
-    // translate 2 -> -200vw
-    storiesTrack.style.transform = `translateX(-${currentStory * 100}vw)`;
+    currentStory = index;
+    stories[currentStory].classList.add('active');
 
-    // Atualizar barras
     for (let i = 0; i < totalStories; i++) {
         const bar = document.getElementById(`bar${i}`);
-        const fill = bar.querySelector('.progress-fill');
-        
-        // Lógica simples: Se o story atual >= indice da barra, ela está cheia.
-        // Se story atual == indice, ela está cheia (ativa).
-        // Se story atual < indice, ela está vazia.
-        if (currentStory >= i) {
-            fill.style.width = '100%';
-        } else {
-            fill.style.width = '0%';
-        }
+        if (i < currentStory) bar.classList.add('completed');
+        if (i === currentStory) bar.classList.add('active');
+    }
+
+    if (currentStory < totalStories - 1) {
+        storyTimeout = setTimeout(() => {
+            showStory(currentStory + 1);
+        }, 10000);
     }
 }
+
+// PAUSAR QUANDO SEGURA
+storiesOverlay.addEventListener('pointerdown', e => {
+    if (e.target.closest('button')) return;
+    isPaused = true;
+    clearTimeout(storyTimeout);
+    const activeFill = document.querySelector(`#bar${currentStory} .progress-fill`);
+    if (activeFill) activeFill.style.animationPlayState = 'paused';
+    
+    // Início do Swipe
+    startX = e.clientX;
+    currentX = startX; // Garante que currentX comece com um valor válido
+    isSwiping = true;
+});
+
+storiesOverlay.addEventListener('pointermove', e => {
+    if (!isSwiping) return;
+    currentX = e.clientX;
+});
+
+storiesOverlay.addEventListener('pointerup', e => {
+    if (e.target.closest('button')) return;
+    
+    isPaused = false;
+    const activeFill = document.querySelector(`#bar${currentStory} .progress-fill`);
+    if (activeFill) activeFill.style.animationPlayState = 'running';
+
+    // Lógica de Swipe/Clique corrigida
+    let diff = currentX - startX;
+    let absDiff = Math.abs(diff);
+    let navigated = false;
+
+    if (absDiff > 50) {
+        // SWIPE
+        if (diff < 0 && currentStory < totalStories - 1) {
+            showStory(currentStory + 1);
+            navigated = true;
+        } else if (diff > 0 && currentStory > 0) {
+            showStory(currentStory - 1);
+            navigated = true;
+        }
+    } else {
+        // CLIQUE (Usa o rect do card para precisão)
+        const rect = storiesOverlay.getBoundingClientRect();
+        const clickX = startX - rect.left;
+
+        if (clickX > rect.width / 2) {
+            if (currentStory < totalStories - 1) {
+                showStory(currentStory + 1);
+                navigated = true;
+            }
+        } else {
+            if (currentStory > 0) {
+                showStory(currentStory - 1);
+                navigated = true;
+            }
+        }
+    }
+
+    isSwiping = false;
+
+    // Retomar timer se não navegou (o showStory já cria um novo timer)
+    if (!navigated && currentStory < totalStories - 1) {
+        storyTimeout = setTimeout(() => {
+            showStory(currentStory + 1);
+        }, 10000);
+    }
+});
 
 // Criar confetes
 function createConfetti() {
@@ -602,7 +670,7 @@ function createConfetti() {
 function confirmarPresenca() {
   // Substitua SEUNUMERO pelo número de WhatsApp com código do país
   const mensagem = encodeURIComponent('Olá! Confirmo presença na festa da Sophia! 🎉💖');
-  window.location.href = `https://wa.me/55SEUNUMERO?text=${mensagem}`;
+  window.location.href = `https://wa.me/5541999217383?text=${mensagem}`;
 }
 
 // Prevenir zoom no iOS
